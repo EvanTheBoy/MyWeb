@@ -14,3 +14,12 @@ type Context struct {
 	hasTimeout bool
 	writerMux  *sync.Mutex
 }
+
+func NewContext(r *http.Request, w http.ResponseWriter) *Context {
+	return &Context{
+		request:   r,
+		response:  w,
+		ctx:       r.Context(),
+		writerMux: &sync.Mutex{},
+	}
+}
