@@ -104,7 +104,7 @@ func (ctx *Context) Value(key interface{}) interface{} {
 
 /*
 接下来的几个函数都是为了实现Context里面基本的request请求,
-即, 我们要去拿数据了
+即, 用Query来获取对应的get参数
 */
 
 // QueryAll 在内部我们调用的是Query函数, 这个函数会解析"raw查询", 然后返回解析后的值
@@ -152,6 +152,10 @@ func (ctx *Context) QueryArray(key string, def []string) []string {
 	}
 	return def
 }
+
+/*
+这一部分是向服务端发送数据, 使用的是post。
+*/
 
 func (ctx *Context) FormAll() map[string][]string {
 	if ctx.request != nil {
