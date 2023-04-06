@@ -11,14 +11,14 @@ type Core struct {
 }
 
 func NewCore() *Core {
-	return &Core{}
+	return &Core{router: map[string]ControllerHandler{}}
 }
 
 func (c *Core) Get(url string, handler ControllerHandler) {
 	c.router[url] = handler
 }
 
-func (c *Core) ServeHTTP(request *http.Request, response http.ResponseWriter) {
+func (c *Core) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	log.Println("core.ServeHTTP")
 	ctx := NewContext(request, response)
 
