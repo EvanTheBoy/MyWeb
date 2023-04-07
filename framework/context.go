@@ -18,9 +18,11 @@ type Context struct {
 	request        *http.Request
 	responseWriter http.ResponseWriter
 	ctx            context.Context
-	handler        ControllerHandler
-	hasTimeout     bool
-	writerMux      *sync.Mutex
+	hasTimeout     bool        // 超时标记
+	writerMux      *sync.Mutex // 锁
+
+	handlers []ControllerHandler // 当前请求的handler链条
+	index    int                 // 索引, 表示当前请求调用到调用链的哪个节点
 }
 
 // NewContext 初始化
@@ -30,6 +32,7 @@ func NewContext(r *http.Request, w http.ResponseWriter) *Context {
 		responseWriter: w,
 		ctx:            r.Context(),
 		writerMux:      &sync.Mutex{},
+		index:          -1,
 	}
 }
 
@@ -41,6 +44,18 @@ func Int64ToBytes(n int64) []byte {
 		return nil
 	}
 	return byteBuf.Bytes()
+}
+
+// Next 实现控制链条的核心方法, 获取当前节点的下一个控制器
+// 该方法通过维护Context中的下标, 来控制链条移动
+func (ctx *Context) Next() error {
+	ctx.index++
+	if ctx.index < len(ctx.handlers) {
+		if err := ctx.handlers[ctx.index](ctx); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 /*

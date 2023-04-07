@@ -6,10 +6,10 @@ import (
 )
 
 type Node struct {
-	isLast   bool              // 本身是否是最后一个节点, 即, 是否可以成为一个独立的url
-	segment  string            // url中的字符串
-	handler  ControllerHandler // 处理函数
-	children []*Node           // 子节点
+	isLast   bool                // 本身是否是最后一个节点, 即, 是否可以成为一个独立的url
+	segment  string              // url中的字符串
+	handlers []ControllerHandler // 中间件+控制器
+	children []*Node             // 子节点
 }
 
 type Tree struct {
@@ -94,7 +94,7 @@ func (n *Node) matchNode(url string) *Node {
 }
 
 // AddRouter 添加路由, 添加前先看看路由是否已经存在
-func (tree *Tree) AddRouter(url string, handler ControllerHandler) error {
+func (tree *Tree) AddRouter(url string, handlers []ControllerHandler) error {
 	node := tree.root
 	if node.matchNode(url) != nil {
 		return errors.New("router exists:" + url)
@@ -124,7 +124,7 @@ func (tree *Tree) AddRouter(url string, handler ControllerHandler) error {
 			cNode.segment = segment
 			if isLast {
 				cNode.isLast = true
-				cNode.handler = handler
+				cNode.handlers = handlers
 			}
 			node.children = append(node.children, cNode)
 			objNode = cNode
@@ -135,10 +135,10 @@ func (tree *Tree) AddRouter(url string, handler ControllerHandler) error {
 }
 
 // FindHandler 查找控制器
-func (tree *Tree) FindHandler(url string) ControllerHandler {
+func (tree *Tree) FindHandler(url string) []ControllerHandler {
 	matchedNode := tree.root.matchNode(url)
 	if matchedNode == nil {
 		return nil
 	}
-	return matchedNode.handler
+	return matchedNode.handlers
 }
