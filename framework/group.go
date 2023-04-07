@@ -15,16 +15,9 @@ func NewGroup(core *Core, prefix string) *Group {
 	}
 }
 
-// IGroup 为了提升扩展性, 届时我们在修改了Group的具体实现后, 只返回这个接口
-type IGroup interface {
-	// Get Post Put Delete 实现HTTPMethod方法
-	Get(string, ControllerHandler)
-	Post(string, ControllerHandler)
-	Put(string, ControllerHandler)
-	Delete(string, ControllerHandler)
-
-	InitGroup(string) IGroup
-}
+/*
+接下来实现IGroup接口
+*/
 
 // InitGroup 实现InitGroup方法
 func (g *Group) InitGroup(url string) IGroup {
