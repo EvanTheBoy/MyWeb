@@ -6,12 +6,18 @@ import (
 )
 
 type Core struct {
-	// 路由url对应的handler处理函数, 这里用一个map结构把它们绑定起来
-	router map[string]ControllerHandler
+	// 这里是一个二级映射, 目的是匹配路由
+	router map[string]*Tree
 }
 
 func NewCore() *Core {
-	return &Core{router: map[string]ControllerHandler{}}
+	// 不使用哈希表来进行二级映射了,因为需要使用动态路由匹配, 之前那种方法不奏效了
+	router := map[string]*Tree{}
+	router["GET"] = NewTree()
+	router["POST"] = NewTree()
+	router["PUT"] = NewTree()
+	router["DELETE"] = NewTree()
+	return &Core{router: router}
 }
 
 func (c *Core) Get(url string, handler ControllerHandler) {
