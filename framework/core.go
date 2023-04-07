@@ -60,18 +60,25 @@ func (c *Core) FindRouterByRequest(request *http.Request) ControllerHandler {
 	return nil
 }
 
+func (c *Core) Group(prefix string) IGroup {
+	return NewGroup(c, prefix)
+}
+
 // 负责路由分发, 所有请求都进入这个函数
 func (c *Core) ServeHTTP(response http.ResponseWriter, request *http.Request) {
 	log.Println("core.ServeHTTP")
+	// 封装自定义的Context
 	ctx := NewContext(request, response)
-	// 一个简单的路由选择器, 暂时先这么写
-	router := c.router["foo"]
+	// 寻找路由
+	router := c.FindRouterByRequest(request)
 	if router == nil {
+		ctx.Json(400, "not found")
 		return
 	}
 	log.Println("core.router")
-	err := router(ctx)
-	if err != nil {
+	// 调用路由函数, 若返回err则表示内部错误, 应该给一个500的状态码
+	if err := router(ctx); err != nil {
+		ctx.Json(500, "inner error")
 		return
 	}
 }
