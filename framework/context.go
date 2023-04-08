@@ -58,6 +58,11 @@ func (ctx *Context) Next() error {
 	return nil
 }
 
+// SetHandlers 设置控制器
+func (ctx *Context) SetHandlers(handlers []ControllerHandler) {
+	ctx.handlers = handlers
+}
+
 /*
 从这里开始的五个方法, 都是我们要自己封装我们这个结构最基本的方法
 */
