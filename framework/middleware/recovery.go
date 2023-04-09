@@ -8,7 +8,7 @@ func Recovery() framework.ControllerHandler {
 		// 捕获c.Next()中出现的panic异常
 		defer func() {
 			if err := recover(); err != nil {
-				c.Json(500, err)
+				c.SetStatus(500).Json(err)
 			}
 		}()
 		// 调用Next执行具体的业务

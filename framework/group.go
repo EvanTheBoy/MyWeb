@@ -51,29 +51,29 @@ func (g *Group) getMiddlewares() []ControllerHandler {
 }
 
 // Get 实现Get方法
-func (g *Group) Get(url string, handlers ...ControllerHandler) {
-	url = g.getAbsolutePrefix() + url
+func (g *Group) Get(uri string, handlers ...ControllerHandler) {
+	uri = g.getAbsolutePrefix() + uri
 	allHandlers := append(g.middlewares, handlers...)
-	g.core.Get(url, allHandlers...)
+	g.core.Get(uri, allHandlers...)
 }
 
 // Post 实现Post方法
-func (g *Group) Post(url string, handlers ...ControllerHandler) {
-	url = g.getAbsolutePrefix() + url
+func (g *Group) Post(uri string, handlers ...ControllerHandler) {
+	uri = g.getAbsolutePrefix() + uri
 	allHandlers := append(g.middlewares, handlers...)
-	g.core.Post(url, allHandlers...)
+	g.core.Post(uri, allHandlers...)
 }
 
 // Put 实现Put方法
-func (g *Group) Put(url string, handlers ...ControllerHandler) {
-	url = g.getAbsolutePrefix() + url
+func (g *Group) Put(uri string, handlers ...ControllerHandler) {
+	uri = g.getAbsolutePrefix() + uri
 	allHandlers := append(g.middlewares, handlers...)
-	g.core.Put(url, allHandlers...)
+	g.core.Put(uri, allHandlers...)
 }
 
 // Delete 实现Delete方法
-func (g *Group) Delete(url string, handlers ...ControllerHandler) {
-	url = g.getAbsolutePrefix() + url
+func (g *Group) Delete(uri string, handlers ...ControllerHandler) {
+	uri = g.getAbsolutePrefix() + uri
 	allHandlers := append(g.middlewares, handlers...)
-	g.core.Delete(url, allHandlers...)
+	g.core.Delete(uri, allHandlers...)
 }

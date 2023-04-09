@@ -4,12 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
-	"encoding/json"
-	"errors"
-	"io"
 	"net/http"
-	"os"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -23,6 +18,7 @@ type Context struct {
 
 	handlers []ControllerHandler // 当前请求的handler链条
 	index    int                 // 索引, 表示当前请求调用到调用链的哪个节点
+	params   map[string]string   // url路由匹配的参数
 }
 
 // NewContext 初始化
@@ -56,6 +52,11 @@ func (ctx *Context) Next() error {
 		}
 	}
 	return nil
+}
+
+// SetParams 设置路由参数
+func (ctx *Context) SetParams(params map[string]string) {
+	ctx.params = params
 }
 
 // SetHandlers 设置控制器
@@ -120,149 +121,4 @@ func (ctx *Context) Err() error {
 // Value Context, 返回用户的Value
 func (ctx *Context) Value(key interface{}) interface{} {
 	return ctx.BaseContext().Value(key)
-}
-
-/*
-接下来的几个函数都是为了实现Context里面基本的request请求,
-即, 用Query来获取对应的get参数
-*/
-
-// QueryAll 在内部我们调用的是Query函数, 这个函数会解析"raw查询", 然后返回解析后的值
-func (ctx *Context) QueryAll() map[string][]string {
-	if ctx.request != nil {
-		// Query函数返回的类型就是这个QueryAll函数返回的类型
-		return ctx.request.URL.Query()
-	}
-	return map[string][]string{}
-}
-
-// QueryInt 查询并返回整数型的值
-func (ctx *Context) QueryInt(key string, def int) int {
-	params := ctx.QueryAll()
-	if values, ok := params[key]; ok {
-		length := len(values)
-		if length > 0 {
-			intVal, err := strconv.Atoi(values[length-1])
-			if err != nil {
-				return def
-			}
-			return intVal
-		}
-	}
-	return def
-}
-
-// QueryString 查询并返回字符串类型的值
-func (ctx *Context) QueryString(key string, def string) string {
-	params := ctx.QueryAll()
-	if values, ok := params[key]; ok {
-		length := len(values)
-		if length > 0 {
-			return values[length-1]
-		}
-	}
-	return def
-}
-
-// QueryArray 查询并返回一个字符串类型的数组的值
-func (ctx *Context) QueryArray(key string, def []string) []string {
-	params := ctx.QueryAll()
-	if values, ok := params[key]; ok {
-		return values
-	}
-	return def
-}
-
-/*
-这一部分是向服务端发送数据, 使用的是post。
-*/
-
-func (ctx *Context) FormAll() map[string][]string {
-	if ctx.request != nil {
-		return ctx.request.PostForm
-	}
-	return map[string][]string{}
-}
-
-func (ctx *Context) FormInt(key string, def int) int {
-	params := ctx.FormAll()
-	if values, ok := params[key]; ok {
-		length := len(values)
-		if length > 0 {
-			intVal, err := strconv.Atoi(values[length-1])
-			if err != nil {
-				return def
-			}
-			return intVal
-		}
-	}
-	return def
-}
-
-func (ctx *Context) FormString(key string, def string) string {
-	params := ctx.FormAll()
-	if values, ok := params[key]; ok {
-		length := len(values)
-		if length > 0 {
-			return values[length-1]
-		}
-	}
-	return def
-}
-
-func (ctx *Context) FormArray(key string, def []string) []string {
-	params := ctx.FormAll()
-	if values, ok := params[key]; ok {
-		return values
-	}
-	return def
-}
-
-func (ctx *Context) BindJson(obj interface{}) error {
-	if ctx.request != nil {
-		n, err := io.Copy(os.Stdout, ctx.request.Body)
-		if err != nil {
-			return err
-		}
-		// 使用io.Copy()更加高效, 但因为这个函数返回的是一个int64类型的值, 需要转换为byte数组
-		body := Int64ToBytes(n)
-		ctx.request.Body = io.NopCloser(bytes.NewBuffer(body))
-		err = json.Unmarshal(body, obj)
-		if err != nil {
-			return err
-		}
-	} else {
-		return errors.New("ctx.request is empty")
-	}
-	return nil
-}
-
-/*
-以下为response部分的函数代码
-*/
-
-func (ctx *Context) Json(status int, obj interface{}) error {
-	if ctx.HasTimeout() {
-		return nil
-	}
-	ctx.responseWriter.Header().Set("Content-Type", "application/json")
-	byt, err := json.Marshal(obj)
-	if err != nil {
-		ctx.responseWriter.WriteHeader(500)
-		return err
-	}
-	ctx.responseWriter.WriteHeader(status)
-	_, err1 := ctx.responseWriter.Write(byt)
-	if err1 != nil {
-		return err
-	}
-	return nil
-}
-
-func (ctx *Context) HTML(status int, obj interface{}, template string) error {
-	return nil
-}
-
-func (ctx *Context) Text(status int, obj string) error {
-	return nil
 }

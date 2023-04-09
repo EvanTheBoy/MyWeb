@@ -27,19 +27,14 @@ func Timeout(d time.Duration) framework.ControllerHandler {
 
 		select {
 		case p := <-panicChan:
-			err1 := c.Json(500, "time out")
-			if err1 != nil {
-				return err1
-			}
+			c.SetStatus(500).Json("time out")
 			log.Println(p)
 		case <-finish:
 			log.Println("finish")
 		case <-durationCtx.Done():
 			c.SetHasTimeout()
-			err2 := c.Json(500, "time out")
-			if err2 != nil {
-				return err2
-			}
+			c.SetStatus(500).Json("time out")
+
 		}
 		return nil
 	}

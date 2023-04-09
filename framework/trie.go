@@ -8,6 +8,7 @@ import (
 type Node struct {
 	isLast   bool                // 本身是否是最后一个节点, 即, 是否可以成为一个独立的url
 	segment  string              // url中的字符串
+	parent   *Node               // 父节点
 	handlers []ControllerHandler // 中间件+控制器
 	children []*Node             // 子节点
 }
@@ -126,6 +127,7 @@ func (tree *Tree) AddRouter(url string, handlers []ControllerHandler) error {
 				cNode.isLast = true
 				cNode.handlers = handlers
 			}
+			cNode.parent = node // 父节点指针修改
 			node.children = append(node.children, cNode)
 			objNode = cNode
 		}
@@ -134,11 +136,21 @@ func (tree *Tree) AddRouter(url string, handlers []ControllerHandler) error {
 	return nil
 }
 
-// FindHandler 查找控制器
-func (tree *Tree) FindHandler(url string) []ControllerHandler {
-	matchedNode := tree.root.matchNode(url)
-	if matchedNode == nil {
-		return nil
+// 从子节点一路往上查找节点, 这里找的是通配符, 把找到的符合条件的都加入到要返回的那个
+// map中去
+func (n *Node) parseParamsFromEndNode(url string) map[string]string {
+	ret := map[string]string{}
+	segments := strings.Split(url, "/")
+	count := len(segments)
+	cur := n
+	for i := count - 1; i >= 0; i-- {
+		if cur.segment == "" {
+			break
+		}
+		if isAppropriateSegment(cur.segment) {
+			ret[cur.segment[1:]] = segments[i]
+		}
+		cur = cur.parent
 	}
-	return matchedNode.handlers
+	return ret
 }
