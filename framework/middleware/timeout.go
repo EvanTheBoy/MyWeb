@@ -14,17 +14,16 @@ func Timeout(d time.Duration) framework.ControllerHandler {
 		panicChan := make(chan interface{}, 1)
 		durationCtx, cancel := context.WithTimeout(c.BaseContext(), d)
 		defer cancel()
-		defer func() {
-			if p := recover(); p != nil {
-				panicChan <- p
-			}
+		go func() {
+			defer func() {
+				if p := recover(); p != nil {
+					panicChan <- p
+				}
+			}()
+			// 调用具体的逻辑
+			c.Next()
+			finish <- struct{}{}
 		}()
-		// 调用具体的逻辑
-		err := c.Next()
-		if err != nil {
-			return err
-		}
-
 		select {
 		case p := <-panicChan:
 			c.SetStatus(500).Json("time out")
@@ -34,7 +33,6 @@ func Timeout(d time.Duration) framework.ControllerHandler {
 		case <-durationCtx.Done():
 			c.SetHasTimeout()
 			c.SetStatus(500).Json("time out")
-
 		}
 		return nil
 	}
