@@ -43,7 +43,7 @@ func main() {
 	// Shutdown这个函数, 它并不会强制停止当前正在执行的进程, 它一定是要先等待, 等待现在正在执行任务的
 	// 进程结束, 他才会真的结束. 所以我们在浏览器输入访问一个需要执行10s的地址, 并在控制台按ctrl+C键
 	// 想要强制终止进程的时候, 我们会发现并没有用, 因为Shutdown需要等待当前正在执行的进程结束
-	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := server.Shutdown(timeoutCtx); err != nil {
 		log.Fatal("Server shutdown:", err)
