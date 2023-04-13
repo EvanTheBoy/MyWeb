@@ -1,13 +1,14 @@
 package router
 
 import (
-	"MyWeb/framework"
+	"github.com/gohade/my-web/framework/gin"
 	"time"
 )
 
-func UserLoginController(c *framework.Context) error {
-	foo, _ := c.QueryString("foo", "def")
+func UserLoginController(c *gin.Context) {
+	foo, _ := c.DefaultQueryString("foo", "def")
+	// 等待10s才结束
 	time.Sleep(10 * time.Second)
-	c.SetOkStatus().Json("ok, UserLoginController:" + foo)
-	return nil
+	// 输出结果
+	c.ISetOkStatus().IJson("ok, UserLoginController:" + foo)
 }

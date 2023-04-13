@@ -1,27 +1,27 @@
 package router
 
 import (
-	"MyWeb/framework"
-	"MyWeb/framework/middleware"
+	"github.com/gohade/my-web/framework/gin"
+	"github.com/gohade/my-web/framework/middleware"
 )
 
-func RegisterRoute(c *framework.Core) {
+func RegisterRoute(c *gin.Engine) {
 	// 静态路由+HTTP方法匹配
-	c.Get("/user/login", middleware.Test3(), UserLoginController)
+	c.GET("/user/login", middleware.Test3(), UserLoginController)
 
 	// 批量通用前缀
 	subjectAPI := c.Group("/subject")
 	{
 		// 动态路由
-		subjectAPI.Delete("/:id", SubjectDelController)
-		subjectAPI.Put("/:id", middleware.Test3(), SubjectUpdateController)
-		subjectAPI.Get("/:id", SubjectGetController)
-		subjectAPI.Get("/list/all", SubjectListController)
+		subjectAPI.DELETE("/:id", SubjectDelController)
+		subjectAPI.PUT("/:id", middleware.Test1(), SubjectUpdateController)
+		subjectAPI.GET("/:id", SubjectGetController)
+		subjectAPI.GET("/list/all", SubjectListController)
 
-		subjectInnerAPI := subjectAPI.InitGroup("/info")
+		subjectInnerAPI := subjectAPI.Group("/info")
 		{
-			subjectInnerAPI.Get("/name", SubjectNameController)
-			subjectInnerAPI.Get("/register", SubjectAddController)
+			subjectInnerAPI.GET("/name", SubjectNameController)
+			subjectInnerAPI.GET("/register", SubjectAddController)
 		}
 	}
 }
