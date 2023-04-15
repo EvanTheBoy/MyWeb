@@ -6,6 +6,7 @@ package gin
 
 import (
 	"fmt"
+	"github.com/gohade/my-web/framework"
 	"html/template"
 	"net"
 	"net/http"
@@ -56,6 +57,9 @@ type RoutesInfo []RouteInfo
 // Create an instance of Engine, by using New() or Default()
 type Engine struct {
 	RouterGroup
+
+	// container
+	container framework.Container
 
 	// Enables automatic redirection if the current route can't be matched but a
 	// handler for the path with (without) the trailing slash exists.
@@ -110,7 +114,7 @@ type Engine struct {
 
 	// If true, the path value will be unescaped.
 	// If UseRawPath is false (by default), the UnescapePathValues effectively is true,
-	// as url.Path gonna be used, which is already unescaped.
+	// as url.Path is going to be used, which is already unescaped.
 	UnescapePathValues bool
 
 	// Value of 'maxMemory' param that is given to http.Request's ParseMultipartForm
@@ -138,7 +142,7 @@ type Engine struct {
 var _ IRouter = &Engine{}
 
 // New returns a new blank Engine instance without any middleware attached.
-// By default the configuration is:
+// By default, the configuration is:
 // - RedirectTrailingSlash:  true
 // - RedirectFixedPath:      false
 // - HandleMethodNotAllowed: false
@@ -243,7 +247,7 @@ func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
 	engine.FuncMap = funcMap
 }
 
-// NoRoute adds handlers for NoRoute. It return a 404 code by default.
+// NoRoute adds handlers for NoRoute. It returns a 404 code by default.
 func (engine *Engine) NoRoute(handlers ...HandlerFunc) {
 	engine.noRoute = handlers
 	engine.rebuild404Handlers()

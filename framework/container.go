@@ -132,6 +132,7 @@ func (hade *HadeContainer) Make(key string) (interface{}, error) {
 	return hade.make(key, nil, false)
 }
 
+// MakeNew 在获取服务实例的时候, 按照不同参数进行初始化
 func (hade *HadeContainer) MakeNew(key string, params []interface{}) (interface{}, error) {
 	return hade.make(key, params, true)
 }
