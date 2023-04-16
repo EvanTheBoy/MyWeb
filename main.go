@@ -16,7 +16,10 @@ import (
 
 func main() {
 	core := gin.New()
-	core.Bind(&demo.DemoServiceProvider{})
+	err1 := core.Bind(&demo.DemoServiceProvider{})
+	if err1 != nil {
+		return
+	}
 	core.Use(gin.Recovery())
 	core.Use(middleware.Cost())
 	//core.RegisterMiddleware(middleware.Timeout(1 * time.Second))
@@ -47,7 +50,7 @@ func main() {
 	// 想要强制终止进程的时候, 我们会发现并没有用, 因为Shutdown需要等待当前正在执行的进程结束
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
-	if err := server.Shutdown(timeoutCtx); err != nil {
-		log.Fatal("Server shutdown:", err)
+	if err2 := server.Shutdown(timeoutCtx); err2 != nil {
+		log.Fatal("Server shutdown:", err2)
 	}
 }
