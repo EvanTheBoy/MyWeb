@@ -1,13 +1,20 @@
 package router
 
-import "github.com/gohade/my-web/framework/gin"
+import (
+	"github.com/gohade/my-web/framework/gin"
+	"github.com/gohade/my-web/provider/demo"
+)
 
 func SubjectAddController(c *gin.Context) {
 	c.ISetOkStatus().IJson("ok, SubjectAddController")
 }
 
 func SubjectListController(c *gin.Context) {
-	c.ISetOkStatus().IJson("ok, SubjectListController")
+	// 获取demo服务实例
+	demoService := c.MustMake(demo.Key).(demo.Service)
+	// 调用服务实例的方法
+	foo := demoService.GetFoo()
+	c.ISetOkStatus().IJson(foo)
 }
 
 func SubjectDelController(c *gin.Context) {

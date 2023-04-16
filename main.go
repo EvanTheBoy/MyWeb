@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gohade/my-web/framework/gin"
 	"github.com/gohade/my-web/framework/middleware"
+	"github.com/gohade/my-web/provider/demo"
 	"github.com/gohade/my-web/router"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 
 func main() {
 	core := gin.New()
+	core.Bind(&demo.DemoServiceProvider{})
 	core.Use(gin.Recovery())
 	core.Use(middleware.Cost())
 	//core.RegisterMiddleware(middleware.Timeout(1 * time.Second))

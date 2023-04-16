@@ -217,9 +217,9 @@ func (c *Context) DefaultFormInt64(key string, def int64) (int64, bool) {
 
 func (c *Context) DefaultFormFloat64(key string, def float64) (float64, bool) {
 	params := c.FormAll()
-	if vals, ok := params[key]; ok {
-		if len(vals) > 0 {
-			return cast.ToFloat64(vals[0]), true
+	if values, ok := params[key]; ok {
+		if len(values) > 0 {
+			return cast.ToFloat64(values[0]), true
 		}
 	}
 	return def, false
@@ -227,9 +227,9 @@ func (c *Context) DefaultFormFloat64(key string, def float64) (float64, bool) {
 
 func (c *Context) DefaultFormFloat32(key string, def float32) (float32, bool) {
 	params := c.FormAll()
-	if vals, ok := params[key]; ok {
-		if len(vals) > 0 {
-			return cast.ToFloat32(vals[0]), true
+	if values, ok := params[key]; ok {
+		if len(values) > 0 {
+			return cast.ToFloat32(values[0]), true
 		}
 	}
 	return def, false
@@ -237,9 +237,9 @@ func (c *Context) DefaultFormFloat32(key string, def float32) (float32, bool) {
 
 func (c *Context) DefaultFormBool(key string, def bool) (bool, bool) {
 	params := c.FormAll()
-	if vals, ok := params[key]; ok {
-		if len(vals) > 0 {
-			return cast.ToBool(vals[0]), true
+	if values, ok := params[key]; ok {
+		if len(values) > 0 {
+			return cast.ToBool(values[0]), true
 		}
 	}
 	return def, false
@@ -247,17 +247,17 @@ func (c *Context) DefaultFormBool(key string, def bool) (bool, bool) {
 
 func (c *Context) DefaultFormStringSlice(key string, def []string) ([]string, bool) {
 	params := c.FormAll()
-	if vals, ok := params[key]; ok {
-		return vals, true
+	if values, ok := params[key]; ok {
+		return values, true
 	}
 	return def, false
 }
 
 func (c *Context) DefaultForm(key string) interface{} {
 	params := c.FormAll()
-	if vals, ok := params[key]; ok {
-		if len(vals) > 0 {
-			return vals[0]
+	if values, ok := params[key]; ok {
+		if len(values) > 0 {
+			return values[0]
 		}
 	}
 	return nil

@@ -1,4 +1,4 @@
-// Copyright 2021 jianfengye.  All rights reserved.
+// Package gin Copyright 2021 jianfengye.  All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file.
 package gin
@@ -12,40 +12,40 @@ import (
 	"net/url"
 )
 
-// IResponse代表返回方法
+// IResponse IResponse代表返回方法
 type IResponse interface {
-	// Json输出
+	// IJson Json输出
 	IJson(obj interface{}) IResponse
 
-	// Jsonp输出
+	// IJsonp Jsonp输出
 	IJsonp(obj interface{}) IResponse
 
-	//xml输出
+	// IXml xml输出
 	IXml(obj interface{}) IResponse
 
-	// html输出
+	// IHtml html输出
 	IHtml(template string, obj interface{}) IResponse
 
-	// string
+	// IText string
 	IText(format string, values ...interface{}) IResponse
 
-	// 重定向
+	// IRedirect 重定向
 	IRedirect(path string) IResponse
 
-	// header
+	// ISetHeader header
 	ISetHeader(key string, val string) IResponse
 
-	// Cookie
+	// ISetCookie Cookie
 	ISetCookie(key string, val string, maxAge int, path, domain string, secure, httpOnly bool) IResponse
 
-	// 设置状态码
+	// ISetStatus 设置状态码
 	ISetStatus(code int) IResponse
 
-	// 设置200状态
+	// ISetOkStatus 设置200状态
 	ISetOkStatus() IResponse
 }
 
-// Jsonp输出
+// IJsonp Jsonp输出
 func (c *Context) IJsonp(obj interface{}) IResponse {
 	// 获取请求参数callback
 	callbackFunc := c.Query("callback")
@@ -80,7 +80,7 @@ func (c *Context) IJsonp(obj interface{}) IResponse {
 	return c
 }
 
-// xml输出
+// IXml xml输出
 func (c *Context) IXml(obj interface{}) IResponse {
 	byt, err := xml.Marshal(obj)
 	if err != nil {
@@ -91,7 +91,7 @@ func (c *Context) IXml(obj interface{}) IResponse {
 	return c
 }
 
-// html输出
+// IHtml html输出
 func (c *Context) IHtml(file string, obj interface{}) IResponse {
 	// 读取模版文件，创建template实例
 	t, err := template.New("output").ParseFiles(file)
@@ -107,7 +107,7 @@ func (c *Context) IHtml(file string, obj interface{}) IResponse {
 	return c
 }
 
-// string
+// IText string
 func (c *Context) IText(format string, values ...interface{}) IResponse {
 	out := fmt.Sprintf(format, values...)
 	c.ISetHeader("Content-Type", "application/text")
@@ -115,19 +115,19 @@ func (c *Context) IText(format string, values ...interface{}) IResponse {
 	return c
 }
 
-// 重定向
+// IRedirect 重定向
 func (c *Context) IRedirect(path string) IResponse {
 	http.Redirect(c.Writer, c.Request, path, http.StatusMovedPermanently)
 	return c
 }
 
-// header
+// ISetHeader header
 func (c *Context) ISetHeader(key string, val string) IResponse {
 	c.Writer.Header().Add(key, val)
 	return c
 }
 
-// Cookie
+// ISetCookie Cookie
 func (c *Context) ISetCookie(key string, val string, maxAge int, path string, domain string, secure bool, httpOnly bool) IResponse {
 	if path == "" {
 		path = "/"
@@ -145,13 +145,13 @@ func (c *Context) ISetCookie(key string, val string, maxAge int, path string, do
 	return c
 }
 
-// 设置状态码
+// ISetStatus 设置状态码
 func (c *Context) ISetStatus(code int) IResponse {
 	c.Writer.WriteHeader(code)
 	return c
 }
 
-// 设置200状态
+// ISetOkStatus 设置200状态
 func (c *Context) ISetOkStatus() IResponse {
 	c.Writer.WriteHeader(http.StatusOK)
 	return c
