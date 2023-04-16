@@ -157,6 +157,7 @@ func New() *Engine {
 			basePath: "/",
 			root:     true,
 		},
+		container:              framework.NewHadeContainer(),
 		FuncMap:                template.FuncMap{},
 		RedirectTrailingSlash:  true,
 		RedirectFixedPath:      false,
@@ -190,7 +191,7 @@ func Default() *Engine {
 
 func (engine *Engine) allocateContext() *Context {
 	v := make(Params, 0, engine.maxParams)
-	return &Context{engine: engine, params: &v}
+	return &Context{engine: engine, params: &v, container: engine.container}
 }
 
 // Delims sets template left and right delims and returns a Engine instance.

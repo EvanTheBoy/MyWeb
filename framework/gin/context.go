@@ -7,6 +7,7 @@ package gin
 import (
 	"errors"
 	"fmt"
+	"github.com/gohade/my-web/framework"
 	"io"
 	"io/ioutil"
 	"math"
@@ -79,6 +80,9 @@ type Context struct {
 	// SameSite allows a server to define a cookie attribute making it impossible for
 	// the browser to send this cookie along with cross-site requests.
 	sameSite http.SameSite
+
+	// server container
+	container framework.Container
 }
 
 /************************************/
