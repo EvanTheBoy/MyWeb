@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/gohade/my-web/app/provider/demo"
 	"github.com/gohade/my-web/framework/gin"
 	"github.com/gohade/my-web/framework/middleware"
-	"github.com/gohade/my-web/provider/demo"
 	"github.com/gohade/my-web/router"
 	"log"
 	"net/http"

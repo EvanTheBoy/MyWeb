@@ -109,7 +109,7 @@ func (hade *HadeContainer) make(key string, params []interface{}, forceNew bool)
 	// 先检查是否已经注册了这个服务
 	sp := hade.findServiceProvider(key)
 	if sp == nil {
-		return nil, errors.New("service:" + key + "have not registered")
+		return nil, errors.New("service:" + key + " have not registered")
 	}
 	// 这个不为空, 那就是MakeNew方法
 	if forceNew {
