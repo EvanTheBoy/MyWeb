@@ -1,24 +1,27 @@
 package demo
 
 import (
-	"fmt"
 	"github.com/gohade/my-web/framework"
 )
 
-type DemoService struct {
-	Service
-	c framework.Container
+type Service struct {
+	container framework.Container
 }
 
-func (s *DemoService) GetFoo() Foo {
-	return Foo{
-		Name: "I am foo",
+func NewService(params ...interface{}) (interface{}, error) {
+	container := params[0].(framework.Container)
+	return &Service{container: container}, nil
+}
+
+func (s *Service) GetAllStudent() []Student {
+	return []Student{
+		{
+			ID:   1,
+			Name: "foo",
+		},
+		{
+			ID:   2,
+			Name: "bar",
+		},
 	}
-}
-
-// NewDemoService 初始化服务实例的方法
-func NewDemoService(params ...interface{}) (interface{}, error) {
-	c := params[0].(framework.Container)
-	fmt.Println("New demo service")
-	return &DemoService{c: c}, nil
 }

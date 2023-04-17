@@ -1,15 +1,12 @@
 package demo
 
-// Key Demo服务的key
-// 定义服务的关键字凭证
-const Key = "hade:demo"
+const DemoKey = "demo"
 
-// Foo Demo服务接口定义的一个数据结构
-type Foo struct {
-	Name string
+type IService interface {
+	GetAllStudent() []Student
 }
 
-// Service Demo服务的接口
-type Service interface {
-	GetFoo() Foo
+type Student struct {
+	ID   int
+	Name string
 }
