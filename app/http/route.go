@@ -9,5 +9,8 @@ func Routes(r *gin.Engine) {
 
 	r.Static("/dist/", "./dist/")
 
-	demo.Register(r)
+	err := demo.Register(r)
+	if err != nil {
+		return
+	}
 }

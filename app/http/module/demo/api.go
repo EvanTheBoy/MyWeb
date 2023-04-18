@@ -42,7 +42,7 @@ func (api *DemoApi) Demo(c *gin.Context) {
 	c.JSON(200, baseFolder)
 }
 
-// Demo godoc
+// Demo2 godoc
 // @Summary 获取所有学生
 // @Description 获取所有学生
 // @Produce  json

@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	hadeHttp "github.com/gohade/my-web/app/http"
 	"github.com/gohade/my-web/app/provider/demo"
 	"github.com/gohade/my-web/framework/gin"
 	"github.com/gohade/my-web/framework/middleware"
-	"github.com/gohade/my-web/router"
+	"github.com/gohade/my-web/framework/provider/app"
 	"log"
 	"net/http"
 	"os"
@@ -15,15 +16,21 @@ import (
 )
 
 func main() {
+	// 创建Engine结构
 	core := gin.New()
-	err1 := core.Bind(&demo.DemoServiceProvider{})
+	err1 := core.Bind(&demo.DemoProvider{})
 	if err1 != nil {
+		return
+	}
+	err2 := core.Bind(&app.HadeAppProvider{})
+	if err2 != nil {
 		return
 	}
 	core.Use(gin.Recovery())
 	core.Use(middleware.Cost())
-	//core.RegisterMiddleware(middleware.Timeout(1 * time.Second))
-	router.RegisterRoute(core)
+
+	//router.RegisterRoute(core)
+	hadeHttp.Routes(core)
 	server := http.Server{
 		Handler: core,
 		Addr:    ":8080",

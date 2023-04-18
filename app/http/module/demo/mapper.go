@@ -17,7 +17,7 @@ func UserModelsToUserDTOs(models []UserModel) []UserDTO {
 }
 
 func StudentsToUserDTOs(students []demoService.Student) []UserDTO {
-	ret := []UserDTO{}
+	var ret []UserDTO
 	for _, student := range students {
 		t := UserDTO{
 			ID:   student.ID,
