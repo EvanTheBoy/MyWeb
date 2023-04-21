@@ -5,7 +5,6 @@ package gin
 
 import (
 	"context"
-	"github.com/gohade/my-web/framework"
 )
 
 func (c *Context) BaseContext() context.Context {
@@ -26,12 +25,4 @@ func (c *Context) MakeNew(key string, params []interface{}) (interface{}, error)
 
 func (c *Context) MustMake(key string) interface{} {
 	return c.container.MustMake(key)
-}
-
-func (engine *Engine) Bind(provider framework.ServiceProvider) error {
-	return engine.container.Bind(provider)
-}
-
-func (engine *Engine) IsBind(key string) bool {
-	return engine.container.IsBind(key)
 }
