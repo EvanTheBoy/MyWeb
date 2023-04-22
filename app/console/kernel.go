@@ -27,5 +27,5 @@ func RunCommand(container framework.Container) error {
 	rootCmd.SetContainer(container)
 	command.AddKernelCommands(rootCmd)
 	AppAddCommand(rootCmd)
-	return nil
+	return rootCmd.Execute()
 }
