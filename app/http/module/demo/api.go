@@ -2,8 +2,6 @@ package demo
 
 import (
 	demoService "github.com/gohade/my-web/app/provider/demo"
-	"github.com/gohade/my-web/framework/contract"
-
 	"github.com/gohade/my-web/framework/gin"
 )
 
@@ -34,12 +32,11 @@ func NewDemoApi() *DemoApi {
 // @Success 200 array []UserDTO
 // @Router /demo/demo [get]
 func (api *DemoApi) Demo(c *gin.Context) {
-	appService := c.MustMake(contract.AppKey).(contract.App)
-	baseFolder := appService.BaseFolder()
-	//users := api.service.GetUsers()
-	//usersDTO := UserModelsToUserDTOs(users)
-	//c.JSON(200, usersDTO)
-	c.JSON(200, baseFolder)
+	//appService := c.MustMake(contract.AppKey).(contract.App)
+	//baseFolder := appService.BaseFolder()
+	users := api.service.GetUsers()
+	usersDTO := UserModelsToUserDTOs(users)
+	c.JSON(200, usersDTO)
 }
 
 // Demo2 godoc

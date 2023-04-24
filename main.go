@@ -14,10 +14,9 @@ func main() {
 	// 绑定APP服务提供者
 	container.Bind(&app.HadeAppProvider{})
 	// 将HTTP引擎初始化, 并且作为服务提供者绑定到服务容器中
-	if engine, err := http.NewHttpEngine(); err != nil {
+	if engine, err := http.NewHttpEngine(); err == nil {
 		container.Bind(&kernel.HadeKernelProvider{HttpEngine: engine})
 	}
 	// 运行root命令
 	console.RunCommand(container)
-
 }
